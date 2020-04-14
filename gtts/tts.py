@@ -10,7 +10,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import logging
 import os
 
-__all__ = ['gTTS', 'gTTSError']
+__all__ = ["gTTS", "gTTSError"]
 
 # Logger
 log = logging.getLogger(__name__)
@@ -23,6 +23,7 @@ class Speed:
     The Google TTS Translate API supports two speeds:
         'slow' <= 0.3 < 'normal'
     """
+
     SLOW = 0.3
     NORMAL = 1
 
@@ -84,41 +85,42 @@ class gTTS:
     GOOGLE_TTS_MAX_CHARS = 100  # Max characters the Google TTS API takes at a time
     GOOGLE_TTS_HEADERS = {
         "Referer": "http://translate.google.com/",
-        "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; WOW64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/47.0.2526.106 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/47.0.2526.106 Safari/537.36",
     }
 
     def __init__(
-            self,
-            text,
-            tld='com',
-            lang='en',
-            slow=False,
-            lang_check=True,
-            pre_processor_funcs=[
-                pre_processors.tone_marks,
-                pre_processors.end_of_line,
-                pre_processors.abbreviations,
-                pre_processors.word_sub
-            ],
-            tokenizer_func=Tokenizer([
+        self,
+        text,
+        tld="com",
+        lang="en",
+        slow=False,
+        lang_check=True,
+        pre_processor_funcs=[
+            pre_processors.tone_marks,
+            pre_processors.end_of_line,
+            pre_processors.abbreviations,
+            pre_processors.word_sub,
+        ],
+        tokenizer_func=Tokenizer(
+            [
                 tokenizer_cases.tone_marks,
                 tokenizer_cases.period_comma,
                 tokenizer_cases.colon,
-                tokenizer_cases.other_punctuation
-            ]).run
+                tokenizer_cases.other_punctuation,
+            ]
+        ).run,
     ):
 
         # Debug
         for k, v in dict(locals()).items():
-            if k == 'self':
+            if k == "self":
                 continue
             log.debug("%s: %s", k, v)
 
         # Text
-        assert text, 'No text to speak'
+        assert text, "No text to speak"
         self.text = text
 
         # Translate URL top-level domain
@@ -172,7 +174,7 @@ class gTTS:
         # Minimize
         min_tokens = []
         for t in tokens:
-            min_tokens += _minimize(t, ' ', self.GOOGLE_TTS_MAX_CHARS)
+            min_tokens += _minimize(t, " ", self.GOOGLE_TTS_MAX_CHARS)
         return min_tokens
 
     def _prepare_requests(self):
@@ -186,7 +188,7 @@ class gTTS:
 
         text_parts = self._tokenize(self.text)
         log.debug("text_parts: %i", len(text_parts))
-        assert text_parts, 'No text to send to TTS API'
+        assert text_parts, "No text to send to TTS API"
 
         prepared_requests = []
         for idx, part in enumerate(text_parts):
@@ -196,26 +198,30 @@ class gTTS:
             except requests.exceptions.RequestException as e:  # pragma: no cover
                 log.debug(str(e), exc_info=True)
                 raise gTTSError(
-                    "Connection error during token calculation: %s" %
-                    str(e))
+                    "Connection error during token calculation: %s" % str(e)
+                )
 
-            payload = {'ie': 'UTF-8',
-                       'q': part,
-                       'tl': self.lang,
-                       'ttsspeed': self.speed,
-                       'total': len(text_parts),
-                       'idx': idx,
-                       'client': 'tw-ob',
-                       'textlen': _len(part),
-                       'tk': part_tk}
+            payload = {
+                "ie": "UTF-8",
+                "q": part,
+                "tl": self.lang,
+                "ttsspeed": self.speed,
+                "total": len(text_parts),
+                "idx": idx,
+                "client": "tw-ob",
+                "textlen": _len(part),
+                "tk": part_tk,
+            }
 
             log.debug("payload-%i: %s", idx, payload)
 
             # Request
-            r = requests.Request(method='GET',
-                                 url=translate_url,
-                                 params=payload,
-                                 headers=self.GOOGLE_TTS_HEADERS)
+            r = requests.Request(
+                method="GET",
+                url=translate_url,
+                params=payload,
+                headers=self.GOOGLE_TTS_HEADERS,
+            )
 
             # Prepare request
             prepared_requests.append(r.prepare())
@@ -247,16 +253,16 @@ class gTTS:
         """
         # When disabling ssl verify in requests (for proxies and firewalls),
         # urllib3 prints an insecure warning on stdout. We disable that.
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
         prepared_requests = self._prepare_requests()
         for idx, pr in enumerate(prepared_requests):
             try:
                 with requests.Session() as s:
                     # Send request
-                    r = s.send(request=pr,
-                               proxies=urllib.request.getproxies(),
-                               verify=False)
+                    r = s.send(
+                        request=pr, proxies=urllib.request.getproxies(), verify=False
+                    )
 
                 log.debug("headers-%i: %s", idx, r.request.headers)
                 log.debug("url-%i: %s", idx, r.request.url)
@@ -279,8 +285,9 @@ class gTTS:
                 log.debug("part-%i written to %s", idx, fp)
             except (AttributeError, TypeError) as e:
                 raise TypeError(
-                    "'fp' is not a file-like object or it does not take bytes: %s" %
-                    str(e))
+                    "'fp' is not a file-like object or it does not take bytes: %s"
+                    % str(e)
+                )
 
     def save(self, savefile):
         """Do the TTS API request and write result to file.
@@ -293,7 +300,7 @@ class gTTS:
 
         """
         try:
-            with open(savefile, 'wb') as f:
+            with open(savefile, "wb") as f:
                 self.write_to_fp(f)
                 log.debug("Saved to %s", savefile)
         except gTTSError:
@@ -305,8 +312,8 @@ class gTTSError(Exception):
     """Exception that uses context to present a meaningful error message"""
 
     def __init__(self, msg=None, **kwargs):
-        self.tts = kwargs.pop('tts', None)
-        self.rsp = kwargs.pop('response', None)
+        self.tts = kwargs.pop("tts", None)
+        self.rsp = kwargs.pop("response", None)
         if msg:
             self.msg = msg
         elif self.tts is not None:
@@ -325,7 +332,7 @@ class gTTSError(Exception):
         if rsp is None:
             premise = "Failed to connect"
 
-            if tts.tld != 'com':
+            if tts.tld != "com":
                 host = _translate_url(tld=tts.tld)
                 cause = "Host '{}' is not reachable".format(host)
 
