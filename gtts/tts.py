@@ -4,6 +4,7 @@ from .utils import _minimize, _len, _clean_tokens, _translate_url
 from .lang import tts_langs
 
 from six.moves import urllib
+from six.moves.urllib.parse import quote
 
 import requests
 from requests.packages import urllib3
