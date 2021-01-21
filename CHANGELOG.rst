@@ -9,6 +9,77 @@ Changelog
 
 .. towncrier release notes start
 
+2.2.1 (2020-11-15)
+------------------
+
+Bugfixes
+~~~~~~~~
+
+- ``_package_rpc()`` was erroneously packaging the entire text instead of tokenized part (`#252 <https://github.com/pndurette/gTTS/issues/252>`_)
+
+
+Improved Documentation
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Removes reference to automatic retrieval of languages (`#250 <https://github.com/pndurette/gTTS/issues/250>`_)
+
+
+Misc
+~~~~
+
+- `#251 <https://github.com/pndurette/gTTS/issues/251>`_
+
+
+2.2.0 (2020-11-14)
+------------------
+
+Features
+~~~~~~~~
+
+- Switch to the newer Google TTS API (thanks to `@Boudewijn26! <https://github.com/pndurette/gTTS/pull/244>`_). See `his great writeup <https://github.com/Boudewijn26/gTTS-token/blob/master/docs/november-2020-translate-changes.md>`_ for more on the methodology and why this was necessary. (`#226 <https://github.com/pndurette/gTTS/issues/226>`_, `#232 <https://github.com/pndurette/gTTS/issues/232>`_, `#236 <https://github.com/pndurette/gTTS/issues/236>`_, `#241 <https://github.com/pndurette/gTTS/issues/241>`_)
+
+
+Deprecations and Removals
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Removed automatic language download from the main code, which has become too unreliable & slow.
+  Languages will still be fetched but a pre-generated list will be shipped with ``gTTS``. (`#233 <https://github.com/pndurette/gTTS/issues/233>`_, `#241 <https://github.com/pndurette/gTTS/issues/241>`_, `#242 <https://github.com/pndurette/gTTS/issues/242>`_, `#243 <https://github.com/pndurette/gTTS/issues/243>`_)
+- Because languages are now pre-generated, removed custom TLD support for language URL (which allowed to get language **names** in other than English) (`#245 <https://github.com/pndurette/gTTS/issues/245>`_)
+
+
+Misc
+~~~~
+
+- `#245 <https://github.com/pndurette/gTTS/issues/245>`_
+
+
+2.1.2 (2020-11-10)
+------------------
+
+Features
+~~~~~~~~
+
+- Update `gTTS-token` to `1.1.4` (`#238 <https://github.com/pndurette/gTTS/issues/238>`_)
+
+
+Bugfixes
+~~~~~~~~
+
+- Fixed an issue where some tokens could be empty after minimization (`#229 <https://github.com/pndurette/gTTS/issues/229>`_, `#239 <https://github.com/pndurette/gTTS/issues/239>`_)
+
+
+Improved Documentation
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Grammar, spelling and example fixes (`#227 <https://github.com/pndurette/gTTS/issues/227>`_)
+
+
+Misc
+~~~~
+
+- `#218 <https://github.com/pndurette/gTTS/issues/218>`_, `#230 <https://github.com/pndurette/gTTS/issues/230>`_, `#231 <https://github.com/pndurette/gTTS/issues/231>`_, `#239 <https://github.com/pndurette/gTTS/issues/239>`_
+
+
 2.1.1 (2020-01-25)
 ------------------
 
