@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gtts.langs import _main_langs
+from .langs import _main_langs
 from warnings import warn
 import logging
 
